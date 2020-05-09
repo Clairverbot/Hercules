@@ -13,7 +13,6 @@
     "scheme": "myapp",
     "splash": {
       "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
       "backgroundImage": "./assets/images/splashbg.png"
     },
     "updates": {
