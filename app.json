@@ -13,7 +13,7 @@
     "scheme": "myapp",
     "splash": {
       "image": "./assets/images/splash.png",
-      "backgroundImage": "./assets/images/splashbg.png"
+      "resizeMode": "contain"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,7 +22,21 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain"
+      }
+    },
+    "android": {
+      "splash": {
+        "mdpi": "./assets/images/splash.png",
+        "hdpi": "./assets/images/splash.png",
+        "xhdpi": "./assets/images/splash.png",
+        "xxhdpi": "./assets/images/splash.png",
+        "xxxhdpi": "./assets/images/splash.png",
+        "resizeMode": "contain"
+      },
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
