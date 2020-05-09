@@ -83,18 +83,18 @@ function RouteItem({ data }) {
             <FontAwesome name="child" size={18} color="#00D649" />
             : data.crowd / 66 <= 1 ?
               [
-                <FontAwesome name="child" size={18} color="#EF7922" />,
-                <FontAwesome name="child" size={18} color="#EF7922" />,
+                <FontAwesome name="child" size={18} color="#EF7922" key="123a"/>,
+                <FontAwesome name="child" size={18} color="#EF7922" key="456a"/>,
               ] :
               [
-                <FontAwesome name="child" size={18} color="#CD0000" />,
-                <FontAwesome name="child" size={18} color="#CD0000" />,
-                <FontAwesome name="child" size={18} color="#CD0000" />,
+                <FontAwesome name="child" size={18} color="#CD0000" key="123b"/>,
+                <FontAwesome name="child" size={18} color="#CD0000" key="456b"/>,
+                <FontAwesome name="child" size={18} color="#CD0000" key="789b"/>,
               ]
           }
         </View>
       </View>
-      <View style={{ position: 'fixed', right: 12, textAlign:'right' }}>
+      <View style={{ position:'absolute', right: 12, textAlign:'right' }}>
         <Text>{data.duration > 60 ? Math.floor(data.duration / 60) + "hr " + data.duration % 30 + "min" : data.duration + " min"}</Text>
         <Text>{"$ " + data.fare.original}</Text>
       </View>
@@ -171,14 +171,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   listContainer: {
-    flex: 6,
+    flex: 8,
     alignSelf: 'center',
     width: '80%'
   },
   accordionHeaderContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    marginTop:12
   },
   accordionHeaderText: {
     fontSize: 18,

@@ -1,74 +1,90 @@
 import { Ionicons } from '@expo/vector-icons';
-import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { RectButton, ScrollView } from 'react-native-gesture-handler';
+import { StyleSheet, Text, View, Image } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
+var moment = require('moment');
+const cardImg=require('../assets/images/cardbg.png')
 
+var data = [
+  { title: 'Rewards', date: moment().format('D MMM yyyy h:mm a'), amount: 0.2, reward: true },
+  { title: 'Farrer Road > Downtown', date: moment().format('D MMM yyyy h:mm a'), amount: 1.44 },
+]
 export default function CardScreen() {
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <OptionButton
-        icon="md-school"
-        label="Read the Expo documentation"
-        onPress={() => WebBrowser.openBrowserAsync('https://docs.expo.io')}
-      />
-
-      <OptionButton
-        icon="md-compass"
-        label="Read the React Navigation documentation"
-        onPress={() => WebBrowser.openBrowserAsync('https://reactnavigation.org')}
-      />
-
-      <OptionButton
-        icon="ios-chatboxes"
-        label="Ask a question on the forums"
-        onPress={() => WebBrowser.openBrowserAsync('https://forums.expo.io')}
-        isLastOption
-      />
-    </ScrollView>
-  );
-}
-
-function OptionButton({ icon, label, onPress, isLastOption }) {
-  return (
-    <RectButton style={[styles.option, isLastOption && styles.lastOption]} onPress={onPress}>
-      <View style={{ flexDirection: 'row' }}>
-        <View style={styles.optionIconContainer}>
-          <Ionicons name={icon} size={22} color="rgba(0,0,0,0.35)" />
-        </View>
-        <View style={styles.optionTextContainer}>
-          <Text style={styles.optionText}>{label}</Text>
-        </View>
+    <View style={styles.container}>
+      {/* todo : card */}
+      <View style={styles.cardContainer}>
+        <Image source={cardImg} ></Image>
+        <Text style={styles.cardText}>$5.13</Text>
       </View>
-    </RectButton>
+      <View style={styles.transactionTitleBar}><Text>Transactions</Text></View>
+      <SafeAreaView style={{ flex: 12 }}>
+        <FlatList
+          data={data}
+          renderItem={({ item }) =>
+            <View style={styles.listItem}>
+              <Ionicons
+                style={{ flex: 1 }}
+                name={item.reward ? "md-gift" : "md-train"}
+                size={18}
+                color={item.reward ? "#EF7922" : "#0D7B9C"}
+              />
+              <View style={{ flex: 5 }}>
+                <Text style={styles.listTitle}>{item.title}</Text>
+                <Text style={styles.listDate}>{item.date}</Text>
+              </View>
+              <Text style={{ flex: 1, textAlign: 'right', color: item.reward ? "#00D649" : "#000", fontWeight: 'bold' }}>{item.reward ? "+ $" + item.amount : "- $" + item.amount}</Text>
+            </View>
+          }
+          keyExtractor={(item, index) => item + index}
+        />
+      </SafeAreaView>
+    </View>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#ffffff',
   },
-  contentContainer: {
-    paddingTop: 15,
+  cardContainer: {
+    flex: 8,
+    justifyContent: "center",
+    alignItems: "center"
   },
-  optionIconContainer: {
-    marginRight: 12,
+  cardText: {
+    position:'absolute',
+    left:67,
+    top:60,
+    color:'#fff',
+    fontWeight:'bold',
+    fontSize:24
   },
-  option: {
-    backgroundColor: '#fdfdfd',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderBottomWidth: 0,
-    borderColor: '#ededed',
+  transactionTitleBar: {
+    backgroundColor: '#f8f8f8',
+    width: '100%',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    flex: 1
   },
-  lastOption: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
+  listItem: {
+    marginHorizontal: 32,
+    marginVertical: 8,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
-  optionText: {
-    fontSize: 15,
-    alignSelf: 'flex-start',
-    marginTop: 1,
+  listTitle: {
+    fontSize: 16,
+    paddingBottom: 4,
   },
+  listDate: {
+    color: '#747474',
+    fontSize: 12
+  }
 });

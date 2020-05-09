@@ -8,7 +8,7 @@ const AccountStack = createStackNavigator();
 export default function AccountStackScreen() {
   return (
     <AccountStack.Navigator>
-      <AccountStack.Screen name="Card" component={AccountScreen} />
+      <AccountStack.Screen name="Account" component={AccountScreen} />
     </AccountStack.Navigator>
   );
 }
