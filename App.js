@@ -4,11 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, BackHandler } from 'react-native';
 
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import LinkingConfiguration from './navigation/LinkingConfiguration';
-
+import * as Location from 'expo-location';
 const Stack = createStackNavigator();
 
 export default function App(props) {
@@ -17,6 +17,10 @@ export default function App(props) {
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+        BackHandler.exitApp()
+      }
       try {
         SplashScreen.preventAutoHide();
 
@@ -44,7 +48,7 @@ export default function App(props) {
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
         <NavigationContainer linking={LinkingConfiguration}>
-          <Stack.Navigator  screenOptions={{headerShown: false,}}>
+          <Stack.Navigator screenOptions={{ headerShown: false, }}>
             <Stack.Screen name="Root" component={BottomTabNavigator} />
           </Stack.Navigator>
         </NavigationContainer>

@@ -1,10 +1,10 @@
-import * as WebBrowser from 'expo-web-browser';
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, Platform, StyleSheet, Text, Button, View, SectionList } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 var moment = require('moment');
 import { FontAwesome } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 
 var data = [
   {
@@ -77,24 +77,26 @@ function RouteItem({ data }) {
         <FontAwesome name={data.preferred ? "star" : "star-o"} color={data.preferred ? "#EF7922" : "#747474"} size={24} />
       </View>
       <View style={{ paddingLeft: 12 }}>
-        <Text>{data.duration}</Text>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems:'center' }}>{data.route.map((r, i) => {
+          return i > 0 ? [<FontAwesome style={{paddingHorizontal:10}} name='refresh' />, <FontAwesome name='bus' />, <Text style={{paddingLeft:8}}>{r.name}</Text>] : [<FontAwesome name='bus' />, <Text style={{paddingLeft:8}}>{r.name}</Text>]
+        })}</View>
         <View style={{ display: 'flex', flexDirection: 'row' }}>
           {data.crowd / 33 <= 1 ?
             <FontAwesome name="child" size={18} color="#00D649" />
             : data.crowd / 66 <= 1 ?
               [
-                <FontAwesome name="child" size={18} color="#EF7922" key="123a"/>,
-                <FontAwesome name="child" size={18} color="#EF7922" key="456a"/>,
+                <FontAwesome name="child" size={18} color="#EF7922" key="123a" />,
+                <FontAwesome name="child" size={18} color="#EF7922" key="456a" />,
               ] :
               [
-                <FontAwesome name="child" size={18} color="#CD0000" key="123b"/>,
-                <FontAwesome name="child" size={18} color="#CD0000" key="456b"/>,
-                <FontAwesome name="child" size={18} color="#CD0000" key="789b"/>,
+                <FontAwesome name="child" size={18} color="#CD0000" key="123b" />,
+                <FontAwesome name="child" size={18} color="#CD0000" key="456b" />,
+                <FontAwesome name="child" size={18} color="#CD0000" key="789b" />,
               ]
           }
         </View>
       </View>
-      <View style={{ position:'absolute', right: 12, textAlign:'right' }}>
+      <View style={{ position: 'absolute', right: 12, textAlign: 'right' }}>
         <Text>{data.duration > 60 ? Math.floor(data.duration / 60) + "hr " + data.duration % 30 + "min" : data.duration + " min"}</Text>
         <Text>{"$ " + data.fare.original}</Text>
       </View>
@@ -113,6 +115,25 @@ function RouteHeader({ title }) {
   )
 }
 export default function RoutesScreen({ navigation }) {
+  const [location, setLocation] = useState(null);
+  const [Data, setData] = useState(null);
+  const [got, setGot] = useState(null);
+  const officeLocation = "1.2780324,103.8528832"
+  const schoolLocation = "1.3098588,103.7782589"
+  useEffect(() => {
+    (async () => {
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      if (got !== 'yes') {
+        console.log(got)
+        let startLoc = location.coords.latitude + "," + location.coords.longitude
+        let Data = await getRoute(startLoc, officeLocation)
+        setData(Data)
+        let got = 'yes'
+        setGot(got)
+      }
+    })();
+  });
   return (
     <View style={styles.container}>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -135,15 +156,50 @@ export default function RoutesScreen({ navigation }) {
 
       </ScrollView>
       <SafeAreaView style={styles.listContainer}>
-        <SectionList
-          sections={data}
-          keyExtractor={(item, index) => item + index}
-          renderItem={({ item }) => <RouteItem data={item} />}
-          renderSectionHeader={({ section: { title } }) => <RouteHeader title={title} />}
-        />
+        {Data !== undefined ?
+          <SectionList
+            sections={Data}
+            keyExtractor={(item, index) => item + index}
+            renderItem={({ item }) => <RouteItem data={item} />}
+            renderSectionHeader={({ section: { title } }) => <RouteHeader title={title} />}
+          />
+          :
+          <Text>Loading</Text>
+        }
       </SafeAreaView>
     </View>
   );
+}
+
+async function getRoute(startLatLong, endLatLong) {
+  try {
+    let response = await fetch('https://GrippingScalyWebpage--clairverbot.repl.co/getRoute?startLatLong=' + startLatLong
+      + "&endLatLong=" + endLatLong + "&date=" + moment().format('yyyy-MM-DD') + "&time=" + moment().format('HH:mm:ss'));
+    let responseJson = await response.json();
+    // console.log(responseJson.plan.itineraries)
+
+    let d = []
+    responseJson.plan.itineraries.map((i, index) => {
+      let route = []
+      i.legs.forEach(l => {
+        if (l.mode === "BUS") {
+          route.push({ type: 'bus', name: l.route })
+        }
+      })
+      let item = {
+        route: route,
+        duration: Math.round(i.duration / 60),
+        crowd: 60 / (index + 1),
+        fare: { original: i.fare },
+        preferred: false
+      }
+      d.push(item)
+    })
+    console.log(d)
+    return [{ title: "Office", data: d }];
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const styles = StyleSheet.create({
@@ -179,7 +235,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: "space-between",
-    marginTop:12
+    marginTop: 12
   },
   accordionHeaderText: {
     fontSize: 18,

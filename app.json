@@ -36,7 +36,7 @@
         "xxhdpi": "./assets/images/splash.png",
         "xxxhdpi": "./assets/images/splash.png",
         "resizeMode": "contain"
-      },
+      }
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

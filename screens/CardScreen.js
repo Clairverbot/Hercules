@@ -7,8 +7,8 @@ var moment = require('moment');
 const cardImg=require('../assets/images/cardbg.png')
 
 var data = [
-  { title: 'Rewards', date: moment().format('D MMM yyyy h:mm a'), amount: 0.2, reward: true },
-  { title: 'Farrer Road > Downtown', date: moment().format('D MMM yyyy h:mm a'), amount: 1.44 },
+  // { title: 'Rewards', date: moment().format('D MMM yyyy h:mm a'), amount: 0.2, reward: true },
+  { title: 'Bus 186', date: moment().format('D MMM yyyy'), amount: 1.44 },
 ]
 export default function CardScreen() {
   return (
@@ -31,8 +31,8 @@ export default function CardScreen() {
                 color={item.reward ? "#EF7922" : "#0D7B9C"}
               />
               <View style={{ flex: 5 }}>
-                <Text style={styles.listTitle}>{item.title}</Text>
                 <Text style={styles.listDate}>{item.date}</Text>
+                <Text style={styles.listTitle}>{item.title}</Text>
               </View>
               <Text style={{ flex: 1, textAlign: 'right', color: item.reward ? "#00D649" : "#000", fontWeight: 'bold' }}>{item.reward ? "+ $" + item.amount : "- $" + item.amount}</Text>
             </View>
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     fontSize: 16,
-    paddingBottom: 4,
+    paddingTop: 4,
   },
   listDate: {
     color: '#747474',
