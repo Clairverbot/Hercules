@@ -70,9 +70,9 @@ var data = [
     ]
   }
 ]
-function RouteItem({ data }) {
+function RouteItem({ data, navigation }) {
   return (
-    <View style={styles.card}>
+    <View style={styles.card} onTouchStart={()=>{navigation.navigate('RouteDetails',data)}}>
       <View>
         <FontAwesome name={data.preferred ? "star" : "star-o"} color={data.preferred ? "#EF7922" : "#747474"} size={24} />
       </View>
@@ -160,7 +160,7 @@ export default function RoutesScreen({ navigation }) {
           <SectionList
             sections={Data}
             keyExtractor={(item, index) => item + index}
-            renderItem={({ item }) => <RouteItem data={item} />}
+            renderItem={({ item }) => <RouteItem data={item} navigation={navigation} />}
             renderSectionHeader={({ section: { title } }) => <RouteHeader title={title} />}
           />
           :

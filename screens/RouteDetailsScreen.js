@@ -2,178 +2,38 @@ import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { FontAwesome } from '@expo/vector-icons';
+var moment = require('moment');
 
 import { MonoText } from '../components/StyledText';
 
-export default function RouteDetailsScreen() {
+export default function RouteDetailsScreen({ route, navigation }) {
+  const data = route.params;
+  console.log(data)
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <View style={styles.welcomeContainer}>
-          <Image
-            source={
-              __DEV__
-                ? require('../assets/images/robot-dev.png')
-                : require('../assets/images/robot-prod.png')
-            }
-            style={styles.welcomeImage}
-          />
-        </View>
+      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 16, backgroundColor: '#f8f8f8' }}>{data.route.map((r, i) => {
+        return i > 0 ? [<FontAwesome style={{ paddingHorizontal: 10 }} name='refresh' />, <FontAwesome name='bus' />, <Text style={{ paddingLeft: 8 }}>{r.name}</Text>] : [<FontAwesome name='bus' />, <Text style={{ paddingLeft: 8 }}>{r.name}</Text>]
+      })}</View>
 
-        <View style={styles.getStartedContainer}>
-          <DevelopmentModeNotice />
+      <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 16 }}>
+        {data.crowd > 30 ? <Text>Depart at {moment().add(30, 'minutes').format('hh:mm a')} instead?</Text> : <Text>Depart at {moment().add(5, 'minutes').format('hh:mm a')}</Text>}
+        <Text>Estimated Time Taken: {data.crowd > 30 ? data.duration - 5 : data.duration} mins</Text>
+        <Text style={{ color: data.crowd > 30 ? '#00D649' : "#000" }}>Fare: $ {data.crowd > 30 ? data.fare.original - 0.6 : data.fare.original}</Text>
+      </View>
 
-          <Text style={styles.getStartedText}>Open up the code for this screen:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-            <MonoText>screens/HomeScreen.js</MonoText>
-          </View>
-
-          <Text style={styles.getStartedText}>
-            Change any of the text, save the file, and your app will automatically reload.
-          </Text>
-        </View>
-
-        <View style={styles.helpContainer}>
-          <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-            <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-
-      <View style={styles.tabBarInfoContainer}>
-        <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-        <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-          <MonoText style={styles.codeHighlightText}>navigation/BottomTabNavigator.js</MonoText>
-        </View>
+      <View style={{ position: 'absolute', bottom: 16, left: 36, marginHorizontal: 16, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <TouchableOpacity onPress={() => { navigation.navigate('Routes') }} style={{ width: '40%', borderColor: '#EF7922', borderWidth: 1, borderRadius: 5, padding: 16 }}><Text style={{ color: '#EF7922', textAlign: 'center' }}>Cancel</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => { navigation.navigate('Card') }} style={{ width: '40%', backgroundColor: '#EF7922', borderRadius: 5, padding: 16 }}><Text style={{ color: '#fff', textAlign: 'center' }}>Proceed</Text></TouchableOpacity>
       </View>
     </View>
   );
 }
 
-RouteDetailsScreen.navigationOptions = {
-  header: null,
-};
-
-function DevelopmentModeNotice() {
-  if (__DEV__) {
-    const learnMoreButton = (
-      <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
-        Learn more
-      </Text>
-    );
-
-    return (
-      <Text style={styles.developmentModeText}>
-        Development mode is enabled: your app will be slower but you can use useful development
-        tools. {learnMoreButton}
-      </Text>
-    );
-  } else {
-    return (
-      <Text style={styles.developmentModeText}>
-        You are not in development mode: your app will run at full speed.
-      </Text>
-    );
-  }
-}
-
-function handleLearnMorePress() {
-  WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/workflow/development-mode/');
-}
-
-function handleHelpPress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/get-started/create-a-new-app/#making-your-first-change'
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
   },
 });

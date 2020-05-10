@@ -7,7 +7,7 @@ var moment = require('moment');
 const cardImg=require('../assets/images/cardbg.png')
 
 var data = [
-  // { title: 'Rewards', date: moment().format('D MMM yyyy h:mm a'), amount: 0.2, reward: true },
+  { title: 'Rewards', date: moment().format('D MMM yyyy h:mm a'), amount: 0.6, reward: true },
   { title: 'Bus 186', date: moment().format('D MMM yyyy'), amount: 1.44 },
 ]
 export default function CardScreen() {
