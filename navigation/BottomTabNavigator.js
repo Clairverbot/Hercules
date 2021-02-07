@@ -1,17 +1,16 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import * as React from 'react';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import * as React from "react";
 
-import TabBarIcon from '../components/TabBarIcon';
-import RoutesStackScreen from './RoutesStackNavigator';
-import CardStackScreen from './CardStackNavigator';
-import AccountStackScreen from './AccountStackNavigator'
+import TabBarIcon from "../components/TabBarIcon";
+import JournalStackScreen from "./JournalStackNavigator";
+import SupportStackScreen from "./SupportStackNavigator";
+import SettingsStackScreen from "./SettingsStackNavigator";
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Routes';
+const INITIAL_ROUTE_NAME = "Journal";
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
-  // currently active tab. Learn more in the documentation:
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
   navigation.setOptions({ headerTitle: null });
 
@@ -19,30 +18,37 @@ export default function BottomTabNavigator({ navigation, route }) {
     <BottomTab.Navigator
       // initialRouteName={INITIAL_ROUTE_NAME}
       tabBarOptions={{
-        activeTintColor: '#EF7922',
-      }}>
+        activeTintColor: "#A979E5",
+      }}
+    >
       <BottomTab.Screen
-        name="Routes"
-        component={RoutesStackScreen}
+        name="Journal"
+        component={JournalStackScreen}
         options={{
-          title: 'Routes',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-map" />,
+          title: "Journal",
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="book" />
+          ),
         }}
       />
       <BottomTab.Screen
-        name="Card"
-        component={CardStackScreen}
+        name="Support"
+        component={SupportStackScreen}
         options={{
-          title: 'Card',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-card" />,
+          title: "Support",
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="heart" />
+          ),
         }}
       />
       <BottomTab.Screen
-        name="Account"
-        component={AccountStackScreen}
+        name="Settings"
+        component={SettingsStackScreen}
         options={{
-          title: 'Account',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-contact" />,
+          title: "Settings",
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="settings" />
+          ),
         }}
       />
     </BottomTab.Navigator>
@@ -50,14 +56,13 @@ export default function BottomTabNavigator({ navigation, route }) {
 }
 
 function getHeaderTitle(route) {
-  const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
+  const routeName =
+    route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
 
   switch (routeName) {
-    case 'Routes':
-      return 'Routes';
-    case 'Card':
-      return 'Card';
-    case 'Account':
-      return 'Account'
+    case "Journal":
+    case "Support":
+    case "Settings":
+      return routeName;
   }
 }

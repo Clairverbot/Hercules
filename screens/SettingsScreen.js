@@ -5,22 +5,16 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 import { MonoText } from '../components/StyledText';
 
-export default function AccountScreen() {
+export default function SettingsScreen() {
   return (
-    <View style={styles.container}>
+    <View>
 
     </View>
   );
 }
 
-AccountScreen.navigationOptions = {
+SettingsScreen.navigationOptions = {
   header: null,
 };
 
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});
